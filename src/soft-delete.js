@@ -58,29 +58,43 @@ exports.default = function (Model, _ref) {
   }
 
   Model.defineProperty(deletedAt, { type: Date, required: false });
-  Model.defineProperty(_isDeleted, { required: true, default: false });
+  Model.defineProperty(_isDeleted, { required: true, type: Boolean, default: false });
 
-  Model.destroyAll = function softDestroyAll(where, cb) {
+  Model.destroyAll = function softDestroyAll(where, cb, optionalCb) {
     var _extends3;
-
-    return Model.updateAll(where, (0, _extends7.default)({}, scrubbed, (_extends3 = {}, (0, _defineProperty3.default)(_extends3, deletedAt, new Date()), (0, _defineProperty3.default)(_extends3, _isDeleted, true), _extends3))).then(function (result) {
-      return typeof cb === 'function' ? cb(null, result) : result;
-    }).catch(function (error) {
-      return typeof cb === 'function' ? cb(error) : _promise2.default.reject(error);
-    });
+    if (arguments.length === 2) {
+      return Model.updateAll(where, (0, _extends7.default)({}, scrubbed, (_extends3 = {}, (0, _defineProperty3.default)(_extends3, deletedAt, new Date()), (0, _defineProperty3.default)(_extends3, _isDeleted, true), _extends3))).then(function (result) {
+        return typeof cb === 'function' ? cb(null, result) : result;
+      }).catch(function (error) {
+        return typeof cb === 'function' ? cb(error) : _promise2.default.reject(error);
+      });
+    } else if (arguments.length === 3) {
+      return Model.updateAll(where, (0, _extends7.default)({}, scrubbed, (_extends3 = {}, (0, _defineProperty3.default)(_extends3, deletedAt, new Date()), (0, _defineProperty3.default)(_extends3, _isDeleted, true), _extends3)), cb).then(function (result) {
+        return typeof optionalCb === 'function' ? optionalCb(null, result) : result;
+      }).catch(function (error) {
+        return typeof optionalCb === 'function' ? optionalCb(error) : _promise2.default.reject(error);
+      });
+    }
   };
 
   Model.remove = Model.destroyAll;
   Model.deleteAll = Model.destroyAll;
 
-  Model.destroyById = function softDestroyById(id, cb) {
+  Model.destroyById = function softDestroyById(id, cb, optionalCb) {
     var _extends4;
-
-    return Model.updateAll({ id: id }, (0, _extends7.default)({}, scrubbed, (_extends4 = {}, (0, _defineProperty3.default)(_extends4, deletedAt, new Date()), (0, _defineProperty3.default)(_extends4, _isDeleted, true), _extends4))).then(function (result) {
-      return typeof cb === 'function' ? cb(null, result) : result;
-    }).catch(function (error) {
-      return typeof cb === 'function' ? cb(error) : _promise2.default.reject(error);
-    });
+    if (arguments.length === 2) {
+      return Model.updateAll({ id: id }, (0, _extends7.default)({}, scrubbed, (_extends4 = {}, (0, _defineProperty3.default)(_extends4, deletedAt, new Date()), (0, _defineProperty3.default)(_extends4, _isDeleted, true), _extends4))).then(function (result) {
+        return typeof cb === 'function' ? cb(null, result) : result;
+      }).catch(function (error) {
+        return typeof cb === 'function' ? cb(error) : _promise2.default.reject(error);
+      });
+    } else if (arguments.length === 3) {
+      return Model.updateAll({ id: id }, (0, _extends7.default)({}, scrubbed, (_extends4 = {}, (0, _defineProperty3.default)(_extends4, deletedAt, new Date()), (0, _defineProperty3.default)(_extends4, _isDeleted, true), _extends4)), cb).then(function (result) {
+        return typeof optionalCb === 'function' ? optionalCb(null, result) : result;
+      }).catch(function (error) {
+        return typeof optionalCb === 'function' ? optionalCb(error) : _promise2.default.reject(error);
+      });
+    }
   };
 
   Model.removeById = Model.destroyById;
@@ -88,7 +102,6 @@ exports.default = function (Model, _ref) {
 
   Model.prototype.destroy = function softDestroy(options, cb) {
     var _extends5;
-
     var callback = cb === undefined && typeof options === 'function' ? options : cb;
 
     return this.updateAttributes((0, _extends7.default)({}, scrubbed, (_extends5 = {}, (0, _defineProperty3.default)(_extends5, deletedAt, new Date()), (0, _defineProperty3.default)(_extends5, _isDeleted, true), _extends5))).then(function (result) {
@@ -103,9 +116,8 @@ exports.default = function (Model, _ref) {
 
   // Emulate default scope but with more flexibility.
   var queryNonDeleted = {
-   _isDeleted:false
+    _isDeleted: false
   };
-  
 
   var _findOrCreate = Model.findOrCreate;
   Model.findOrCreate = function findOrCreateDeleted() {
