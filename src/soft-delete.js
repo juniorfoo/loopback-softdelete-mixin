@@ -123,10 +123,12 @@ exports.default = function (Model, _ref) {
   Model.findOrCreate = function findOrCreateDeleted() {
     var query = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-    if (!query.where) query.where = {};
-
     if (!query.deleted) {
-      query.where = { and: [query.where, queryNonDeleted] };
+      if (!query.where) {
+        query.where = queryNonDeleted;
+      } else {
+        query.where = { and: [query.where, queryNonDeleted] };
+      }
     }
 
     for (var _len = arguments.length, rest = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -139,11 +141,13 @@ exports.default = function (Model, _ref) {
   var _find = Model.find;
   Model.find = function findDeleted() {
     var query = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-    if (!query.where) query.where = {};
-
+    
     if (!query.deleted) {
-      query.where = { and: [query.where, queryNonDeleted] };
+      if (!query.where) {
+        query.where = queryNonDeleted;
+      } else {
+        query.where = { and: [query.where, queryNonDeleted] };
+      }
     }
 
     for (var _len2 = arguments.length, rest = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
@@ -183,3 +187,4 @@ exports.default = function (Model, _ref) {
 };
 
 module.exports = exports['default'];
+
