@@ -162,7 +162,13 @@ exports.default = function (Model, _ref) {
     var where = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
     // Because count only receives a 'where', there's nowhere to ask for the deleted entities.
-    var whereNotDeleted = { and: [where, queryNonDeleted] };
+    var whereNotDeleted = {};
+    if (Object.keys(where).length === 0) {
+      whereNotDeleted = queryNonDeleted;
+    } else {
+      whereNotDeleted = { and: [where, queryNonDeleted] };
+    }
+    debug('Count where = %s', JSON.stringify(whereNotDeleted));
 
     for (var _len3 = arguments.length, rest = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
       rest[_key3 - 1] = arguments[_key3];
