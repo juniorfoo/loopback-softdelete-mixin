@@ -182,7 +182,13 @@ exports.default = function (Model, _ref) {
     var where = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
     // Because update/updateAll only receives a 'where', there's nowhere to ask for the deleted entities.
-    var whereNotDeleted = { and: [where, queryNonDeleted] };
+    var whereNotDeleted = {};
+    if (Object.keys(where).length === 0) {
+      whereNotDeleted = queryNonDeleted;
+    } else {
+      whereNotDeleted = { and: [where, queryNonDeleted] };
+    }
+    debug('Count where = %s', JSON.stringify(whereNotDeleted));
 
     for (var _len4 = arguments.length, rest = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
       rest[_key4 - 1] = arguments[_key4];
