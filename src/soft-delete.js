@@ -116,7 +116,7 @@ exports.default = function (Model, _ref) {
 
   // Emulate default scope but with more flexibility.
   var queryNonDeleted = {
-    _isDeleted: false
+    [_isDeleted]: false
   };
 
   var _findOrCreate = Model.findOrCreate;
@@ -141,7 +141,7 @@ exports.default = function (Model, _ref) {
   var _find = Model.find;
   Model.find = function findDeleted() {
     var query = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-    
+
     if (!query.deleted) {
       if (!query.where) {
         query.where = queryNonDeleted;
